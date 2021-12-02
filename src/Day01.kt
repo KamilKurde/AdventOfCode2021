@@ -1,8 +1,6 @@
-fun List<String>.toIntList() = this.filterNot { it.isEmpty() }.map { it.toInt() }
-
 fun main() {
 	fun part1(input: List<String>): Int {
-		val numbers = input.toIntList()
+		val numbers = input.filterNot { it.isEmpty() }.map { it.toInt() }
 		var counter = 0
 		for (i in 1 until numbers.size)
 			if (numbers[i] > numbers[i - 1])
@@ -10,11 +8,10 @@ fun main() {
 		return counter
 	}
 
-	fun part2(input: List<String>): Int {
-		val numbers = input.toIntList()
-		val windowed = numbers.windowed(3, partialWindows = true)
-		return part1(windowed.map { it.sum().toString() })
-	}
+	fun part2(input: List<String>) = part1(
+		input.windowed(3, partialWindows = true)
+		{ window -> window.sumOf { element -> element.toInt() }.toString() }
+	)
 
 	val input = readInput("Day01")
 	println(part1(input))
