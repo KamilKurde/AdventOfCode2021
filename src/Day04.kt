@@ -34,18 +34,20 @@ data class Board(val nodes: Array<Array<Node>>) {
 }
 
 fun main() {
+	fun generateNumbers(numbers: String) = numbers.split(",").map { it.toInt() }.iterator()
+	fun generateBoards(data: List<String>) = data.filterNot { it.isEmpty() }
+		.windowed(5, 5)
+		.map { board ->
+			Board(board.map { row ->
+				row.split(" ")
+					.filterNot { it.isEmpty() }
+					.map { it.toInt() }
+			})
+		}
+
 	fun part1(input: List<String>): Int {
-		val numbers = input.first().split(",").map { it.toInt() }.iterator()
-		val boards = input.drop(1)
-			.filterNot { it.isEmpty() }
-			.windowed(5, 5)
-			.map { board ->
-				Board(board.map { row ->
-					row.split(" ")
-						.filterNot { it.isEmpty() }
-						.map { it.toInt() }
-				})
-			}
+		val numbers = generateNumbers(input.first())
+		val boards = generateBoards(input.drop(1))
 		var number = 0
 		while (boards.none { it.won }) {
 			number = numbers.next()
@@ -55,7 +57,19 @@ fun main() {
 	}
 
 	fun part2(input: List<String>): Int {
-		TODO()
+		val numbers = generateNumbers(input.first())
+		val boards = generateBoards(input.drop(1))
+		var number = 0
+		val boardsThatWon = mutableListOf<Board>()
+		while (!boards.all { it.won }) {
+			number = numbers.next()
+			boards.forEach {
+				it.check(number)
+				if (it.won && it !in boardsThatWon)
+					boardsThatWon += it
+			}
+		}
+		return boardsThatWon.last().nodes.flatten().filterNot { it.checked }.sumOf { it.number } * number
 	}
 
 	val input = readInput("Day04")
