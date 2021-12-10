@@ -10,7 +10,17 @@ fun main() {
 	}
 
 	fun part2(input: List<String>): Int {
-		TODO()
+		val positions = input.joinToString(",").split(",").map { it.toInt() }
+		val possiblePositionCosts = Array(positions.maxOf { it }) { possiblePosition ->
+			positions.sumOf {
+				var accumulator = 0
+				for (i in 1..abs(it - possiblePosition)) {
+					accumulator += i
+				}
+				accumulator
+			}
+		}
+		return possiblePositionCosts.minOf { it }
 	}
 
 	val input = readInput("Day07")
