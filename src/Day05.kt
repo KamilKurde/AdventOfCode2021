@@ -24,18 +24,11 @@ fun main() {
 		}.filter {
 			it.x1 == it.x2 || it.y1 == it.y2
 		}
-		println("map: ")
 		lines.forEach { line ->
 			line.points.forEach { it ->
 				points[it] = (points[it] ?: 0) + 1
 			}
 		}
-		/*for (i in 0..points.keys.maxOf { it.x }) {
-			for (j in 0..points.keys.maxOf { it.y }) {
-				print(points[Line.Point(i, j)] ?: '.')
-			}
-			print("\n")
-		}*/
 		return points.values.count { it >= 2 }
 	}
 
