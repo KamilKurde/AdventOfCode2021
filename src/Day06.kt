@@ -1,28 +1,32 @@
-data class LanternFish(val creatingInterval: Int, private val list: MutableList<LanternFish>, var remainingDays: Int = creatingInterval) {
-	fun nextDay() {
+import java.util.*
+
+class LanternFish(val creatingInterval: Int, var remainingDays: Int = creatingInterval) {
+	fun nextDay(list: MutableList<LanternFish>) {
 		remainingDays--
 		if (remainingDays < 0) {
 			remainingDays = creatingInterval
-			list += LanternFish(creatingInterval, list, creatingInterval + 2)
+			list += LanternFish(creatingInterval, creatingInterval + 2)
 		}
 	}
 }
 
 fun main() {
-	fun part1(input: List<String>): Int {
-		val lanternFishes = mutableListOf<LanternFish>()
-		lanternFishes += input.joinToString(",").split(",").map { LanternFish(6, lanternFishes, it.toInt()) }
-		repeat(80)
+	fun howManyLanternFishes(days: Int, initialState: MutableList<LanternFish>): Int {
+		val lanternFishes = if(days > 100) LinkedList<LanternFish>() else mutableListOf()
+		lanternFishes += initialState
+		repeat(days)
 		{
 			for (i in lanternFishes.indices)
-				lanternFishes[i].nextDay()
+				lanternFishes[i].nextDay(lanternFishes)
+			println("$it: ${lanternFishes.size}")
+			//println("After ${it + 1} days: ${lanternFishes.map { it.remainingDays }.joinToString(",")}")
 		}
 		return lanternFishes.size
 	}
 
-	fun part2(input: List<String>) {
-		TODO()
-	}
+	fun part1(input: List<String>) = howManyLanternFishes(80, input.joinToString(",").split(",").map { LanternFish(6, it.toInt()) }.toMutableList())
+
+	fun part2(input: List<String>) = howManyLanternFishes(256, input.joinToString(",").split(",").map { LanternFish(6, it.toInt()) }.toMutableList())
 
 	val input = readInput("Day06")
 	println(part1(input))
